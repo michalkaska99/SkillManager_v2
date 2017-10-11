@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+    <ModulePrefs title="SkillManager"
+        description="SkillManager"
+        height="500">
+        <Require feature="settitle" />
+        <Require feature="dynamic-height" />
+        <Require feature="pubsub-2" />
+    	<Require feature="setprefs" />
+        <Require feature="loadingindicator">
+            <Param name="manual-dismiss">false</Param>
+            <Param name="loading-timeout">10</Param>
+        </Require>
+    </ModulePrefs>
+
+    <Content type="html">
+        <![CDATA[
+        	<!DOCTYPE html>
+        	<!-- Styling -->
+            <link rel="stylesheet" href="SkillManager.css" type="text/css" />
+
+             <!-- jQuery -->
+            <script type="text/javascript" src="/desktop/assets/js/jquery.min.js" charset="UTF-8"></script>
+
+            <!-- Finesse Library -->
+            <script type="text/javascript" src="/desktop/assets/js/finesse.js" charset="UTF-8"></script>
+
+            <!-- Gadget Business Logic -->
+            <script type="text/javascript" src="SkillManager.js" charset="UTF-8"></script>
+
+            <body>
+                <!-- Sample Gadget -->
+                <div>
+                  	<fieldset id="skillmngr_settings">
+                    <legend></legend>
+
+                   <br>
+
+                  <div id="menu">
+                     <select id="select_team"></select>
+                     <button class="stahnout" privdata="stahnout" onClick="finesse.modules.SkillManager.loadResource();"> Nahrát ze serveru </button>
+                     <button class="ulozit" privdata="ulozit" onClick="finesse.modules.SkillManager.updateResource();"> Ulozit agenta </button>
+                     <select id="select_resource"></select>
+                     
+                       <textarea id="result2" readonly rows="1" cols="50">Nacti data ze serveru</textarea>
+                      
+                  </div>
+                  <br>
+                  <div id="result">
+                                         
+                     <div id="skill_list">
+                       </div>
+                        
+                     </div>
+                    
+                    <br>
+                    
+                 
+
+            		</fieldset>
+              
+                </div>
+                   <br>
+               <div>
+               <fieldset id="skillmngr_souhrn">
+                  <br>
+               <div id="souhrn">
+               <table>
+               </table>
+               </div>
+                <br>
+               </fieldset>
+               
+               </div>
+               <br>
+            </body>
+
+         <script type="text/javascript">
+                gadgets.HubSettings.onConnect = function () {
+                    finesse.modules.SkillManager.init();
+
+                 };
+            </script>
+
+
+
+        ]]>
+    </Content>
+</Module>
