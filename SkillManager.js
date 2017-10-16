@@ -110,13 +110,14 @@ finesse.modules.SkillManager = (function ($) {
             
              var curTeam = user.getTeamName();
             clientLogs.log ("loadSkillSuccess(): curTeam: " + curTeam);
-            if (curTeam.indexOf("Brno") > -1) {
+            // foolowing is specific version for cpost. It allows to show only specific skills per supervisor team. This skill are selected by the begining of their name
+            /*if (curTeam.indexOf("Brno") > -1) {
                $("#skill_list [privdata*='C_']").hide();
                $("#skill_list [privdata*='Z_']").hide();
             } else {
               $("#skill_list [privdata*='H_']").hide();
               $("#skill_list [privdata*='Z_']").hide();
-            }
+            }*/
             
         });
        
@@ -127,7 +128,7 @@ finesse.modules.SkillManager = (function ($) {
       makeWebServiceError = function(rsp) {
       clientLogs.log("makeWebServiceError(): in method");
       clientLogs.log("makeWebServiceError():" + rsp.content);
-      $('#result2').text("Selhala komunikace se serverem, kontaktuje prosím administrátora systému");
+      $('#result2').text("Selhala komunikace se serverem, kontaktuje prosï¿½m administrï¿½tora systï¿½mu");
     },
     
     loadTeamsSuccess = function(rsp) {
@@ -140,8 +141,13 @@ finesse.modules.SkillManager = (function ($) {
         $xml.find("team").each(function(index) {
             var $team = $(this);
             var teamname = $team.find("teamname").text();
-            
+            if (teamname === user.getTeamName()){
+                content +="<option selected='selected' value='" + teamname + "'>" + teamname + "</option>";
+            } else {
+                content +="<option value='" + teamname + "'>" + teamname + "</option>";
+            }
             //clientLogs.log("loadTeamSuccess(): " + teamname);
+            /*
             if ((curTeam.indexOf("Ostrava") > -1) && (teamname.indexOf("Ostrava") > -1)) {
                 //var n = curTeam.indexOf("Ostrava");
                 //clientLogs.log("loadTeamSuccess()Ostrava: "+ curTeam + " teamname " + teamname + " " + n);
@@ -160,6 +166,7 @@ finesse.modules.SkillManager = (function ($) {
                     content +="<option value='" + teamname + "'>" + teamname + "</option>";
                 }
             } 
+            */
         });
         //clientLogs.log("loadTeamSuccess(): vysledek " + content);
         $("#select_team").html(content);
@@ -191,7 +198,7 @@ finesse.modules.SkillManager = (function ($) {
               
                 
                 if ($resource2.find("userID").text() === selectedUser){
-                   //clientLogs.log ("prepareXmlFile(): našel jsem selected user " + selectedUser);
+                   //clientLogs.log ("prepareXmlFile(): naï¿½el jsem selected user " + selectedUser);
                     xmlfile = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><resource>";
                     xmlfile += "<self>" + $resource2.find("self").text() + "</self>";
                     xmlfile += "<userID>" + $resource2.find("userID").text() + "</userID>";
@@ -290,7 +297,7 @@ finesse.modules.SkillManager = (function ($) {
           
 
     },
-    //Alternativni AJAX pro XML PUT, když nefungoval gadget.io s ceskymi znaky
+    //Alternativni AJAX pro XML PUT, kdyï¿½ nefungoval gadget.io s ceskymi znaky
     xmlPut: function (url,document){
        clientLogs.log ("xmlPut(): in method " + url);
        clientLogs.log ("xmlPut(): in method " + document);
@@ -313,13 +320,13 @@ finesse.modules.SkillManager = (function ($) {
 	   clientLogs.log ("xmlPut(): error " + xhr.responseText);
            clientLogs.log ("xmlPut(): error " + textStatus);
            clientLogs.log ("xmlPut(): error " + error);
-           $('#result2').text("Nastal problém s uložením SKILL agentovi, kontaktujte administrátora systému");
+           $('#result2').text("Nastal problï¿½m s uloï¿½enï¿½m SKILL agentovi, kontaktujte administrï¿½tora systï¿½mu");
          }
     });
        
     },
     //###############################################################################
-    //vytvori souhrnou tabulku agentù a prirazených skillù
+    //vytvori souhrnou tabulku agentï¿½ a prirazenï¿½ch skillï¿½
     createSouhrn: function(myTeam,xml){
         clientLogs.log ("createSouhrn(): in method" + xml);
         var xmlDoc = $.parseXML(xml),
@@ -361,13 +368,16 @@ finesse.modules.SkillManager = (function ($) {
                             var $skill = $(this);
                             var skillName = $skill.find("skillName").text(); 
                             //clientLogs.log("createSouhrn() skillName : " + skillName); 
+                            souhrnTable += "<td class='" + skillName + " " + userID + "'>" + skillName + "</td>";
+                            /*
+                             * specific for Ceska Posta
                             if ((selectedTeam.indexOf("Brno") > -1) & (skillName.indexOf("H_") > -1)){
                                 souhrnTable += "<td class='" + skillName + " " + userID + "'>" + skillName + "</td>"; 
                             }
                             if ((selectedTeam.indexOf("Ostrava") > -1) & (skillName.indexOf("C_") > -1)){
                                 souhrnTable += "<td class='" + skillName + " " + userID + "'>" + skillName + "</td>";
                             }
-                
+                            */
                         });          
                         souhrnTable += "</tr>";
                         //clientLogs.log("createSOuhrn(): " + souhrnTable);
@@ -383,8 +393,8 @@ finesse.modules.SkillManager = (function ($) {
           
   //################################################################################        
     /* 
-     * Nasledující funkce po nahráná agentù vytvori seznam agentù pro vyber a zobrazenym skilum 
-     * pridá CLASS podle nastaveni agentù
+     * Nasledujï¿½cï¿½ funkce po nahrï¿½nï¿½ agentï¿½ vytvori seznam agentï¿½ pro vyber a zobrazenym skilum 
+     * pridï¿½ CLASS podle nastaveni agentï¿½
      * 
      */
     parseAdminXml: function (xml) {
@@ -488,8 +498,8 @@ finesse.modules.SkillManager = (function ($) {
             params = params || {};
             params[gadgets.io.RequestParameters.HEADERS] = params[gadgets.io.RequestParameters.HEADERS] || {};
             clientLogs.log("mymakeRequest(): options.content = " + params[gadgets.io.RequestParameters.POST_DATA]);
-            gadgets.io.makeRequest(encodeURI("http://10.164.248.90") + url, handler, params);
-            clientLogs.log("mymakeRequest(): io.makeRequest to http://10.164.248.90" + url);
+            gadgets.io.makeRequest(encodeURI("http://192.168.10.30") + url, handler, params);
+            clientLogs.log("mymakeRequest(): io.makeRequest to http://192.168.10.30" + url);
         },
 /*---------------------------------------------------------------------------------------------------- */
 
@@ -574,7 +584,7 @@ finesse.modules.SkillManager = (function ($) {
              
                 params[gadgets.io.RequestParameters.HEADERS]["Accept"] = "application/" + options.conttype + "; charset=utf-8";
                 
-                params[gadgets.io.RequestParameters.HEADERS]["Authorization"] = "Basic Y2N4YWRtaW46UDBzdGFjQGs=";
+                params[gadgets.io.RequestParameters.HEADERS]["Authorization"] = "Basic bWthc2thOjIqR2FtYnJpbnVT";
 
                 // Content
                 params[gadgets.io.RequestParameters.POST_DATA] = options.content;
@@ -734,7 +744,7 @@ finesse.modules.SkillManager = (function ($) {
             clientLogs.init(gadgets.Hub, "SkillManager", cfg);
             clientLogs.log("init(): in method");
             $("#menu [privdata*='ulozit']").hide();
-            $('#result2').text("Nejprve je nutne nacist agenty ze serveru. Kdykoliv chcete provest novou editaci SKILL, je vhodné nejprve nacist aktulni stav");
+            $('#result2').text("Nejprve je nutne nacist agenty ze serveru. Kdykoliv chcete provest novou editaci SKILL, je vhodnï¿½ nejprve nacist aktulni stav");
             
 
 
