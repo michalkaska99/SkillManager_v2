@@ -334,7 +334,8 @@ finesse.modules.SkillManager = (function ($) {
         $lskills = $(loadedSkills);
         var selectedTeam = $("#select_team").val();
         clientLogs.log ("createSouhrn(): selectedTeam: " + selectedTeam);
-        
+        var thHeader="";
+        var countThHeader =0;
         var souhrnTable = "";
        
         var sortedAgents = new Array();
@@ -349,7 +350,7 @@ finesse.modules.SkillManager = (function ($) {
         sortedAgents = sortedAgents.sort();
         sortedAgents.forEach(function (value,key){
             clientLogs.log ("createSouhrn(): in method " + value + " " + key);
-
+            
             $xml.find("resource").each(function(index) {
                 var $resource = $(this);
                 var prijmeni = $resource.find("lastName").text();
@@ -364,9 +365,14 @@ finesse.modules.SkillManager = (function ($) {
                     clientLogs.log ("createSouhrn(): myteam + agent team " + myTeam + " " + agentTeam);
                     if (selectedTeam.indexOf(agentTeam) > -1){
                         souhrnTable += "<tr class='" + userID + "'><td>" + agentName + "</td>";
+                                               
                         $lskills.find("skill").each(function(index) {
+                            
                             var $skill = $(this);
                             var skillName = $skill.find("skillName").text(); 
+                            if (countThHeader == 0){
+                                thHeader+="<th>"+skillName+"</th>";
+                            }
                             //clientLogs.log("createSouhrn() skillName : " + skillName); 
                             souhrnTable += "<td class='" + skillName + " " + userID + "'>" + skillName + "</td>";
                             /*
@@ -378,14 +384,15 @@ finesse.modules.SkillManager = (function ($) {
                                 souhrnTable += "<td class='" + skillName + " " + userID + "'>" + skillName + "</td>";
                             }
                             */
-                        });          
+                        });   
+                        countThHeader =1;
                         souhrnTable += "</tr>";
                         //clientLogs.log("createSOuhrn(): " + souhrnTable);
                     }
                 }
             });
         });
-        souhrnTable = "<table><tr><th>Agent</th><th>Skill</th><tr>" + souhrnTable;
+        souhrnTable = "<table><tr><th>Agent</th>"+ thHeader + "<tr>" + souhrnTable;
         souhrnTable += "</table>"; 
         $("#souhrn table").replaceWith(souhrnTable);
     },
