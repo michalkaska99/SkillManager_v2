@@ -591,7 +591,9 @@ finesse.modules.SkillManager = (function ($) {
              
                 params[gadgets.io.RequestParameters.HEADERS]["Accept"] = "application/" + options.conttype + "; charset=utf-8";
                 
-                params[gadgets.io.RequestParameters.HEADERS]["Authorization"] = "Basic bWthc2thOjIqR2FtYnJpbnVT";
+                var b64credentials = finesse.utilities.Utilities.b64Encode(finesse.gadget.skillManager.appserver.user +":"+finesse.gadget.skillManager.appserver.pwd);
+                //params[gadgets.io.RequestParameters.HEADERS]["Authorization"] = "Basic bWthc2thOjIqR2FtYnJpbnVT";
+                arams[gadgets.io.RequestParameters.HEADERS]["Authorization"] = b64credentials;
 
                 // Content
                 params[gadgets.io.RequestParameters.POST_DATA] = options.content;
