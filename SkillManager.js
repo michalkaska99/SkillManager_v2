@@ -505,8 +505,8 @@ finesse.modules.SkillManager = (function ($) {
             params = params || {};
             params[gadgets.io.RequestParameters.HEADERS] = params[gadgets.io.RequestParameters.HEADERS] || {};
             clientLogs.log("mymakeRequest(): options.content = " + params[gadgets.io.RequestParameters.POST_DATA]);
-            gadgets.io.makeRequest(encodeURI("http://192.168.10.30") + url, handler, params);
-            clientLogs.log("mymakeRequest(): io.makeRequest to http://192.168.10.30" + url);
+            gadgets.io.makeRequest(encodeURI("http://" + finesse.gadget.skillManager.appserver) + url, handler, params);
+            clientLogs.log("mymakeRequest(): io.makeRequest to http://"+ finesse.gadget.skillManager.appserver + url);
         },
 /*---------------------------------------------------------------------------------------------------- */
 
