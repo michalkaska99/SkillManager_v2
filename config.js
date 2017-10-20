@@ -32,6 +32,6 @@ finesse.gadget.skillManager.Config = (function () {
 finesse.gadget.skillManager.appserver = {
     ip: "192.168.10.30",
     admin: "ccxadmin",
-    pwd: "IPTLab123"
+    pwd: "IPT_Lab_123"
 };
 

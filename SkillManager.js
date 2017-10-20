@@ -505,8 +505,8 @@ finesse.modules.SkillManager = (function ($) {
             params = params || {};
             params[gadgets.io.RequestParameters.HEADERS] = params[gadgets.io.RequestParameters.HEADERS] || {};
             clientLogs.log("mymakeRequest(): options.content = " + params[gadgets.io.RequestParameters.POST_DATA]);
-            gadgets.io.makeRequest(encodeURI("http://" + finesse.gadget.skillManager.appserver) + url, handler, params);
-            clientLogs.log("mymakeRequest(): io.makeRequest to http://"+ finesse.gadget.skillManager.appserver + url);
+            gadgets.io.makeRequest(encodeURI("http://" + finesse.gadget.skillManager.appserver.ip) + url, handler, params);
+            clientLogs.log("mymakeRequest(): io.makeRequest to http://"+ finesse.gadget.skillManager.appserver.ip + url);
         },
 /*---------------------------------------------------------------------------------------------------- */
 
@@ -590,10 +590,11 @@ finesse.modules.SkillManager = (function ($) {
                 params[gadgets.io.RequestParameters.HEADERS]["Content-Type"] = "application/" + options.conttype + "; charset=utf-8";
              
                 params[gadgets.io.RequestParameters.HEADERS]["Accept"] = "application/" + options.conttype + "; charset=utf-8";
-                
-                var b64credentials = finesse.utilities.Utilities.b64Encode(finesse.gadget.skillManager.appserver.user +":"+finesse.gadget.skillManager.appserver.pwd);
+                clientLogs.log("myrestRequest(): user:"+finesse.gadget.skillManager.appserver.admin);
+                var b64credentials = finesse.utilities.Utilities.b64Encode(finesse.gadget.skillManager.appserver.admin +":"+finesse.gadget.skillManager.appserver.pwd);
                 //params[gadgets.io.RequestParameters.HEADERS]["Authorization"] = "Basic bWthc2thOjIqR2FtYnJpbnVT";
-                arams[gadgets.io.RequestParameters.HEADERS]["Authorization"] = b64credentials;
+                clientLogs.log("myrestRequest(): credentials:"+b64credentials);
+                params[gadgets.io.RequestParameters.HEADERS]["Authorization"] = "Basic "+b64credentials;
 
                 // Content
                 params[gadgets.io.RequestParameters.POST_DATA] = options.content;
