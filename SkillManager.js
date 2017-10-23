@@ -38,7 +38,7 @@ finesse.modules.SkillManager = (function ($) {
       selectedUser = "",
 
       
-      akce = "get_Resource",
+      //akce = "get_Resource",
        //get_Resource , get_Skills, update_Resource
        
        skilly = new Array(),
@@ -375,15 +375,7 @@ finesse.modules.SkillManager = (function ($) {
                             }
                             //clientLogs.log("createSouhrn() skillName : " + skillName); 
                             souhrnTable += "<td class='" + skillName + " " + userID + "'>" + skillName + "</td>";
-                            /*
-                             * specific for Ceska Posta
-                            if ((selectedTeam.indexOf("Brno") > -1) & (skillName.indexOf("H_") > -1)){
-                                souhrnTable += "<td class='" + skillName + " " + userID + "'>" + skillName + "</td>"; 
-                            }
-                            if ((selectedTeam.indexOf("Ostrava") > -1) & (skillName.indexOf("C_") > -1)){
-                                souhrnTable += "<td class='" + skillName + " " + userID + "'>" + skillName + "</td>";
-                            }
-                            */
+                            
                         });   
                         countThHeader =1;
                         souhrnTable += "</tr>";
@@ -497,128 +489,15 @@ finesse.modules.SkillManager = (function ($) {
     
 
     
-
-/*--------------------------------------------------------------------------------------------------------*/
-    mymakeRequest : function (url, handler, params) {
-            clientLogs.log("mymakeRequest(): in method" + url);
-
-            params = params || {};
-            params[gadgets.io.RequestParameters.HEADERS] = params[gadgets.io.RequestParameters.HEADERS] || {};
-            clientLogs.log("mymakeRequest(): options.content = " + params[gadgets.io.RequestParameters.POST_DATA]);
-            gadgets.io.makeRequest(encodeURI("http://" + finesse.gadget.skillManager.appserver.ip) + url, handler, params);
-            clientLogs.log("mymakeRequest(): io.makeRequest to http://"+ finesse.gadget.skillManager.appserver.ip + url);
-        },
-/*---------------------------------------------------------------------------------------------------- */
-
-        _mycreateAjaxHandler: function (options) {
-            var parentUser = this;
-
-            return function (rsp) {
-                var requestId, error = false, rspObj;
-                clientLogs.log("_mycreateAjaxHandler");
-                if (options.success || options.error) {
-                    rspObj = {
-                        status: rsp.rc,
-                        content: rsp.text
-                    };
-
-                    //Some responses may not have a body.
-                    if (rsp.text.length > 0) {
-                        try {
-                            //TODO: Here you could parse xml into JSON, rather than just using the content in the success handler
-                            //rspObj.object = gadgets.json.parse((parentUser._util.xml2json(jQuery.parseXML(rsp.text), "")));
-                            //clientLogs.log("_mycreateAjaxHandler(): " + rsp.text);
-                        } catch (e) {
-                            error = true;
-                            rspObj.error = {
-                                errorType: "parseError",
-                                errorMessage: "Could not serialize XML: " + e
-                            };
-                        }
-                    } else {
-                        rspObj.object = {};
-                    }
-
-                    if (!error && rspObj.status >= 200 && rspObj.status < 300) {
-                        if (options.success) {
-                            options.success(rspObj);
-                        }
-                    } else if (options.error) {
-                        options.error(rspObj);
-                    }
-                }
-            };
-        },
-/*--------------------------------------------------------------------------------------------------------- */
-
-    myrestRequest : function (url, options) {
-            var params, uuid;
-
-            params = {};
-
-            clientLogs.log("myrestRequest(): In myrestRequest" + url);
-            // Protect against null dereferencing of options allowing its (nonexistant) keys to be read as undefined
-            options = options || {};
-            options.success = _util.validateHandler(options.success);
-            options.error = _util.validateHandler(options.error);
-            // Request Headers
-            params[gadgets.io.RequestParameters.HEADERS] = {};
-            // HTTP method is a passthrough to gadgets.io.makeRequest, makeRequest defaults to GET
-            params[gadgets.io.RequestParameters.METHOD] = options.method;
-            //true if this should be a GET request, false otherwise
-            if (!options.method || options.method === "GET") {
-                //Disable caching for GETs
-                if (url.indexOf("?") > -1) {
-                    url += "&";
-                } else {
-                    url += "?";
-                }
-                url += "nocache=" + _util.currentTimeMillis();
-            } else {
-                /**
-                 * If not GET, generate a requestID and add it to the headers,
-                 **/
-                uuid = _util.generateUUID();
-                params[gadgets.io.RequestParameters.HEADERS].requestId = uuid;
-                params[gadgets.io.RequestParameters.GET_FULL_HEADERS] = "true";
-            }
-
-            // Content Body
-            if (typeof options.content === "object") { }
-                // Content Type
-                
-                params[gadgets.io.RequestParameters.HEADERS]["Content-Type"] = "application/" + options.conttype + "; charset=utf-8";
-             
-                params[gadgets.io.RequestParameters.HEADERS]["Accept"] = "application/" + options.conttype + "; charset=utf-8";
-                clientLogs.log("myrestRequest(): user:"+finesse.gadget.skillManager.appserver.admin);
-                var b64credentials = finesse.utilities.Utilities.b64Encode(finesse.gadget.skillManager.appserver.admin +":"+finesse.gadget.skillManager.appserver.pwd);
-                //params[gadgets.io.RequestParameters.HEADERS]["Authorization"] = "Basic bWthc2thOjIqR2FtYnJpbnVT";
-                clientLogs.log("myrestRequest(): credentials:"+b64credentials);
-                params[gadgets.io.RequestParameters.HEADERS]["Authorization"] = "Basic "+b64credentials;
-
-                // Content
-                params[gadgets.io.RequestParameters.POST_DATA] = options.content;
-                clientLogs.log("myrestRequest(): options.content = " + params[gadgets.io.RequestParameters.POST_DATA]);
-                //params[gadgets.io.RequestParameters.HEADERS]["Content-Length"] = options.content.length;
-                
-                
-                 
-                        
-           
-
-            // go do a makerequest
-            this.mymakeRequest(encodeURI(url), this._mycreateAjaxHandler(options), params);
-        },
-
 /*----------------------------------------------------------------------------------*/
-       createNewWebServicesRequest : function (handlers) {
+       createNewWebServicesRequest : function (action,handlers) {
             clientLogs.log("createNewWebServicesRequest(): in method--- ");
             var contentBody = {};
             handlers = handlers || {};
 
-            if (akce.match('get_Skills')) {
+            if (action.match('get_Skills')) {
               clientLogs.log("createNewWebServicesRequest(): get_Skills--- ");
-              this.myrestRequest("/adminapi/skill", {
+              finesse.gadget.include.myrestRequest("/adminapi/skill", {
                 method: 'GET',
                 success: handlers.success,
                 error: handlers.error,
@@ -627,9 +506,9 @@ finesse.modules.SkillManager = (function ($) {
 
             });
             };
-            if (akce.match('get_Teams')) {
+            if (action.match('get_Teams')) {
               clientLogs.log("createNewWebServicesRequest(): get_Skills--- ");
-              this.myrestRequest("/adminapi/team", {
+              finesse.gadget.include.myrestRequest("/adminapi/team", {
                 method: 'GET',
                 success: handlers.success,
                 error: handlers.error,
@@ -638,9 +517,9 @@ finesse.modules.SkillManager = (function ($) {
 
             });
             };
-            if (akce.match('get_Resource')) {
+            if (action.match('get_Resource')) {
               clientLogs.log("createNewWebServicesRequest(): get_Resource--- ");
-              this.myrestRequest("/adminapi/resource/", {
+              finesse.gadget.include.myrestRequest("/adminapi/resource/", {
                 method: 'GET',
                 success: handlers.success,
                 error: handlers.error,
@@ -650,8 +529,8 @@ finesse.modules.SkillManager = (function ($) {
             });
             };
 
-            if (akce.match('update_Resource')) {
-              clientLogs.log("createNewWebServicesRequest(): " + akce + "--- ");
+            if (action.match('update_Resource')) {
+              clientLogs.log("createNewWebServicesRequest(): " + action + "--- ");
               //var xmlUpdate = $.parseXML(xmlfile);
               //clientLogs.log("createNewWebServicesRequest(): xmlfile pred odeslanim = " + xmlfile);
               this.makeXmlFile();
@@ -660,7 +539,7 @@ finesse.modules.SkillManager = (function ($) {
                         return '&#'+i.charCodeAt(0)+';';
               });
               
-              this.myrestRequest("/adminapi/resource/" + selectedUser, {
+              finesse.gadget.include.myrestRequest("/adminapi/resource/" + selectedUser, {
                 method: 'PUT',
                 success: handlers.success,
                 error: handlers.error,
@@ -689,8 +568,8 @@ finesse.modules.SkillManager = (function ($) {
 
             $('#select_resource').html(vyber);
             //this.makeWebService();
-            akce = "get_Resource";
-            this.createNewWebServicesRequest( {
+            //akce = "get_Resource";
+            this.createNewWebServicesRequest( "get_Resource",{
                 success: loadResourceSuccess,
                 error: makeWebServiceError
             });
@@ -698,8 +577,8 @@ finesse.modules.SkillManager = (function ($) {
 /*-----------------------------------------------------------------------------------------------------------------*/        
         loadSkills : function () {
             clientLogs.log("loadSkills(): in method");
-            akce = "get_Skills";
-            this.createNewWebServicesRequest( {
+            //akce = "get_Skills";
+            this.createNewWebServicesRequest("getSkills", {
                 success: loadSkillsSuccess,
                 error: makeWebServiceError
             });
@@ -709,8 +588,8 @@ finesse.modules.SkillManager = (function ($) {
 /*-----------------------------------------------------------------------------------------------------------------*/        
         loadTeams : function () {
             clientLogs.log("loadSkills(): in method");
-            akce = "get_Teams";
-            this.createNewWebServicesRequest( {
+            //akce = "get_Teams";
+            this.createNewWebServicesRequest("get_Teams", {
                 success: loadTeamsSuccess,
                 error: makeWebServiceError
             });
@@ -720,8 +599,8 @@ finesse.modules.SkillManager = (function ($) {
 /*-----------------------------------------------------------------------------------------------------------------*/
         updateResource : function () {
             clientLogs.log("loadSkills(): in method");
-            akce = "update_Resource";
-            this.createNewWebServicesRequest( {
+            //akce = "update_Resource";
+            this.createNewWebServicesRequest("update_Resource", {
                 success: updateResourceSuccess,
                 error: makeWebServiceError
             });
