@@ -28,6 +28,8 @@
             <!-- Gadget Business Logic -->
             <script type="text/javascript" src="SkillManager.js" charset="UTF-8"></script>
             <script type="text/javascript" src="config.js" charset="UTF-8"></script>
+            <script type="text/javascript" src="include.js" charset="UTF-8"></script>
+            
 
             <body>
                 <!-- Sample Gadget -->
