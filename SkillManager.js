@@ -9,6 +9,7 @@ finesse.modules = finesse.modules || {};
 finesse.modules.SkillManager = (function ($) {
 
       var user,
+      cfg,
       
       xmlfile = "",finalXmlFile="",
       
@@ -24,7 +25,7 @@ finesse.modules.SkillManager = (function ($) {
        
     _handleSystemInfoLoad = function(sysinfo) {
         clientLogs.log("in _handleSystemInfoLoad.");
-        var text = sysinfo.getDeploymentType();
+        var dtype = sysinfo.getDeploymentType();
         var isLoad = sysinfo.isLoaded();
         var status = sysinfo.getStatus();
         var domain = sysinfo.getXmppDomain();
@@ -32,9 +33,27 @@ finesse.modules.SkillManager = (function ($) {
         var timestamp = sysinfo.getCurrentTimestamp();
         var single = sysinfo.isSingleNode();
         //var thishost = sysinfo.getThisHost(host);
-        text = text;
+        var text = dtype;
         text = text + " " + isLoad._loaded + " " + status + " " + domain + " " + pubsub + " " + timestamp + " " + single + " ";
         clientLogs.log("sysinfo: "+text);
+        if (dtype === "UCCX") {
+            $("#menu [privdata*='ulozit']").hide();
+            $('#result2').text("Nejprve je nutne nacist agenty ze serveru. Kdykoliv chcete provest novou editaci SKILL, je vhodn� nejprve nacist aktulni stav");
+            user = new finesse.restservices.User({
+                id: cfg.id, 
+                onLoad : handleUserLoad,
+                onChange : handleUserChange,
+                onLoadError : handleUserError
+            
+            });
+        } else {
+            $("#menu [privdata*='ulozit']").remove();
+            $("#menu [privdata*='stahnout']").remove();
+            $("#menu #select_team").remove();
+            $("#menu #select_resource").remove();
+            $('#result2').text("This gadget is created only for UCCX systems. It can not be used with UCCE");
+            
+        }   
 
     },
     _handleSystemInfoChange = function(sysinfo) {
@@ -49,6 +68,7 @@ finesse.modules.SkillManager = (function ($) {
         //var thishost = sysinfo.getThisHost(host);
         text = text + " " + isLoad._loaded + " " + status + " " + domain + " " + pubsub + " " + timestamp + " " + single + " ";
         clientLogs.log("sysinfo: "+text);
+        
 
     };   
        
@@ -598,7 +618,7 @@ finesse.modules.SkillManager = (function ($) {
          */
         init : function () {
             var clientLogs = finesse.cslogger.ClientLogger;   // declare clientLogs
-            var cfg = finesse.gadget.Config;
+            cfg = finesse.gadget.Config;
             //_util = finesse.utilities.Utilities;
 
             gadgets.window.adjustHeight("350");
@@ -612,18 +632,12 @@ finesse.modules.SkillManager = (function ($) {
             // initialized with a reference to the current configuration.
             finesse.clientservices.ClientServices.init(cfg);
             
-            user = new finesse.restservices.User({
-                id: cfg.id, 
-                onLoad : handleUserLoad,
-                onChange : handleUserChange,
-                onLoadError : handleUserError
-            });
+            
             // Initiate the clientLogs. The gadget id will be logged as a part of the message
             clientLogs.init(gadgets.Hub, "SkillManager", cfg);
             clientLogs.log("init(): in method modified");
 
-            $("#menu [privdata*='ulozit']").hide();
-            $('#result2').text("Nejprve je nutne nacist agenty ze serveru. Kdykoliv chcete provest novou editaci SKILL, je vhodn� nejprve nacist aktulni stav");
+            
             
 
 
