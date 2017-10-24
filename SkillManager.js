@@ -5,30 +5,7 @@ clientLogs = finesse.cslogger.ClientLogger || {};  // for logging
 
 /** @namespace */
 finesse.modules = finesse.modules || {};
-/*finesse.gadget.Config = (function () {
-	var _prefs = new gadgets.Prefs();
 
-	/** @scope finesse.gadget.Config */
-/* return {
-		authorization: _prefs.getString("authorization"),
-		country: _prefs.getString("country"),
-		language: _prefs.getString("language"),
-		locale: _prefs.getString("locale"),
-		host: _prefs.getString("host"),
-		hostPort: _prefs.getString("hostPort"),
-		extension: _prefs.getString("extension"),
-		mobileAgentMode: _prefs.getString("mobileAgentMode"),
-		mobileAgentDialNumber: _prefs.getString("mobileAgentDialNumber"),
-		xmppDomain: _prefs.getString("xmppDomain"),
-		pubsubDomain: _prefs.getString("pubsubDomain"),
-		restHost: _prefs.getString("restHost"),
-		scheme: _prefs.getString("scheme"),
-		localhostFQDN: _prefs.getString("localhostFQDN"),
-		localhostPort: _prefs.getString("localhostPort"),
-		clientDriftInMillis: _prefs.getInt("clientDriftInMillis")
-	};
-}());
-*/
 finesse.modules.SkillManager = (function ($) {
 
       var user,
@@ -47,12 +24,12 @@ finesse.modules.SkillManager = (function ($) {
        
        
        
-       handleUserLoad = function (userevent) {
-          clientLogs.log ("handleUserLoad): in method"); 
-          finesse.modules.SkillManager.loadSkills();
-            finesse.modules.SkillManager.loadTeams();
-           
-        },
+    handleUserLoad = function(userevent) {
+        clientLogs.log("handleUserLoad): in method");
+        finesse.modules.SkillManager.loadSkills();
+        finesse.modules.SkillManager.loadTeams();
+
+    },
       
         handleUserChange = function(userevent) {
           clientLogs.log ("handleUserChange): in method");      
@@ -125,10 +102,10 @@ finesse.modules.SkillManager = (function ($) {
         gadgets.window.adjustHeight();
        },
 
-      makeWebServiceError = function(rsp) {
-      clientLogs.log("makeWebServiceError(): in method");
-      clientLogs.log("makeWebServiceError():" + rsp.content);
-      $('#result2').text("Selhala komunikace se serverem, kontaktuje pros�m administr�tora syst�mu");
+    makeWebServiceError = function(rsp) {
+        clientLogs.log("makeWebServiceError(): in method");
+        clientLogs.log("makeWebServiceError():" + rsp.content);
+        $('#result2').text("Selhala komunikace se serverem, kontaktuje pros�m administr�tora syst�mu");
     },
     
     loadTeamsSuccess = function(rsp) {
@@ -146,27 +123,7 @@ finesse.modules.SkillManager = (function ($) {
             } else {
                 content +="<option value='" + teamname + "'>" + teamname + "</option>";
             }
-            //clientLogs.log("loadTeamSuccess(): " + teamname);
-            /*
-            if ((curTeam.indexOf("Ostrava") > -1) && (teamname.indexOf("Ostrava") > -1)) {
-                //var n = curTeam.indexOf("Ostrava");
-                //clientLogs.log("loadTeamSuccess()Ostrava: "+ curTeam + " teamname " + teamname + " " + n);
-                if (teamname === user.getTeamName()){
-                    content +="<option selected='selected' value='" + teamname + "'>" + teamname + "</option>";
-                } else {
-                    content +="<option value='" + teamname + "'>" + teamname + "</option>";
-                }
-            }
-            if ((curTeam.indexOf("Brno") > -1) && (teamname.indexOf("Brno") > -1)) {
-                //var n = curTeam.indexOf("Brno");
-                //clientLogs.log("loadTeamSuccess()Brno: "+ curTeam + " teamname " + teamname + " " + n);
-                if (teamname === user.getTeamName()){
-                    content +="<option selected='selected' value='" + teamname + "'>" + teamname + "</option>";
-                } else {
-                    content +="<option value='" + teamname + "'>" + teamname + "</option>";
-                }
-            } 
-            */
+            
         });
         //clientLogs.log("loadTeamSuccess(): vysledek " + content);
         $("#select_team").html(content);
@@ -179,7 +136,7 @@ finesse.modules.SkillManager = (function ($) {
  // #############################################################################
 
 /*------------------------------------------------------------------------------------------------------------------------------        */
-    /** @scope finesse.modules.SampleGadget */
+
     return {
         
     prepareXmlFile : function(seluser,xml) {
@@ -614,10 +571,11 @@ finesse.modules.SkillManager = (function ($) {
         init : function () {
             var clientLogs = finesse.cslogger.ClientLogger;   // declare clientLogs
             var cfg = finesse.gadget.Config;
-            _util = finesse.utilities.Utilities;
+            //_util = finesse.utilities.Utilities;
 
             gadgets.window.adjustHeight("350");
-
+            	
+            var sysInfo = finesse.restservices.SystemInfo()
             
             // Initiate the ClientServices.  ClientServices are
             // initialized with a reference to the current configuration.
@@ -632,6 +590,7 @@ finesse.modules.SkillManager = (function ($) {
             // Initiate the clientLogs. The gadget id will be logged as a part of the message
             clientLogs.init(gadgets.Hub, "SkillManager", cfg);
             clientLogs.log("init(): in method");
+            clientLogs.log("init: sysInfo=" + sysInfo.getDeploymentType());
             $("#menu [privdata*='ulozit']").hide();
             $('#result2').text("Nejprve je nutne nacist agenty ze serveru. Kdykoliv chcete provest novou editaci SKILL, je vhodn� nejprve nacist aktulni stav");
             

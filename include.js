@@ -64,7 +64,8 @@ finesse.gadget.include = (function () {
             var params, uuid;
 
             params = {};
-
+            _util = finesse.utilities.Utilities;
+            
             clientLogs.log("myrestRequest(): In myrestRequest" + url);
             // Protect against null dereferencing of options allowing its (nonexistant) keys to be read as undefined
             options = options || {};
