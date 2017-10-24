@@ -22,7 +22,35 @@ finesse.modules.SkillManager = (function ($) {
        
        loadedSkills,
        
-       
+    _handleSystemInfoLoad = function(sysinfo) {
+        clientLogs.log("in _handleSystemInfoLoad.");
+        var text = sysinfo.getDeploymentType();
+        var isLoad = sysinfo.isLoaded();
+        var status = sysinfo.getStatus();
+        var domain = sysinfo.getXmppDomain();
+        var pubsub = sysinfo.getXmppPubSubDomain();
+        var timestamp = sysinfo.getCurrentTimestamp();
+        var single = sysinfo.isSingleNode();
+        //var thishost = sysinfo.getThisHost(host);
+        text = text;
+        text = text + " " + isLoad._loaded + " " + status + " " + domain + " " + pubsub + " " + timestamp + " " + single + " ";
+        clientLogs.log("sysinfo: "+text);
+
+    },
+    _handleSystemInfoChange = function(sysinfo) {
+        clientLogs.log("in _handleSystemInfoChange.");
+        var text = sysinfo.getDeploymentType();
+        var isLoad = sysinfo.isLoaded();
+        var status = sysinfo.getStatus();
+        var domain = sysinfo.getXmppDomain();
+        var pubsub = sysinfo.getXmppPubSubDomain();
+        var timestamp = sysinfo.getCurrentTimestamp();
+        var single = sysinfo.isSingleNode();
+        //var thishost = sysinfo.getThisHost(host);
+        text = text + " " + isLoad._loaded + " " + status + " " + domain + " " + pubsub + " " + timestamp + " " + single + " ";
+        clientLogs.log("sysinfo: "+text);
+
+    };   
        
     handleUserLoad = function(userevent) {
         clientLogs.log("handleUserLoad): in method");
@@ -69,7 +97,7 @@ finesse.modules.SkillManager = (function ($) {
         var xmlDoc = $.parseXML(rsp.content),
          $xml = $(xmlDoc);
          loadedSkills = xmlDoc;
-         clientLogs.log ("loadSkillSuccess(): loadedSkills: ");
+         clientLogs.log ("loadSkillSuccess(): loadedSkills: "+loadedSkills);
          //var result = '';
          //var value ='';
          
@@ -315,7 +343,7 @@ finesse.modules.SkillManager = (function ($) {
                 
                 
                 var agentTeam = $resource.find("team").attr("name");
-                //clientLogs.log ("createSouhrn(): porovnavam  " + value + " proti " + prijmeni + " " + jmeno);
+                clientLogs.log ("createSouhrn(): porovnavam  " + value + " proti " + prijmeni + " " + jmeno);
                 if (value === (prijmeni + " " + jmeno)){
                     var agentName = prijmeni + " " + jmeno;
                     var userID = $resource.find("userID").text();
@@ -330,13 +358,13 @@ finesse.modules.SkillManager = (function ($) {
                             if (countThHeader == 0){
                                 thHeader+="<th>"+skillName+"</th>";
                             }
-                            //clientLogs.log("createSouhrn() skillName : " + skillName); 
+                            clientLogs.log("createSouhrn() skillName : " + skillName); 
                             souhrnTable += "<td class='" + skillName + " " + userID + "'>" + skillName + "</td>";
                             
                         });   
                         countThHeader =1;
                         souhrnTable += "</tr>";
-                        //clientLogs.log("createSOuhrn(): " + souhrnTable);
+                        clientLogs.log("createSOuhrn(): " + souhrnTable);
                     }
                 }
             });
@@ -535,7 +563,7 @@ finesse.modules.SkillManager = (function ($) {
         loadSkills : function () {
             clientLogs.log("loadSkills(): in method");
             //akce = "get_Skills";
-            this.createNewWebServicesRequest("getSkills", {
+            this.createNewWebServicesRequest("get_Skills", {
                 success: loadSkillsSuccess,
                 error: makeWebServiceError
             });
@@ -575,8 +603,11 @@ finesse.modules.SkillManager = (function ($) {
 
             gadgets.window.adjustHeight("350");
             	
-            var sysInfo = finesse.restservices.SystemInfo()
             
+            systeminfo = new finesse.restservices.SystemInfo("",{
+		onLoad: _handleSystemInfoLoad,
+                onChange: _handleSystemInfoChange
+            });
             // Initiate the ClientServices.  ClientServices are
             // initialized with a reference to the current configuration.
             finesse.clientservices.ClientServices.init(cfg);
@@ -589,8 +620,8 @@ finesse.modules.SkillManager = (function ($) {
             });
             // Initiate the clientLogs. The gadget id will be logged as a part of the message
             clientLogs.init(gadgets.Hub, "SkillManager", cfg);
-            clientLogs.log("init(): in method");
-            clientLogs.log("init: sysInfo=" + sysInfo.getDeploymentType());
+            clientLogs.log("init(): in method modified");
+
             $("#menu [privdata*='ulozit']").hide();
             $('#result2').text("Nejprve je nutne nacist agenty ze serveru. Kdykoliv chcete provest novou editaci SKILL, je vhodn� nejprve nacist aktulni stav");
             
