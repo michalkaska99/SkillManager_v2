@@ -61,8 +61,9 @@ finesse.gadget.include = (function () {
         },
         
         myrestRequest : function (url, options) {
+            clientLogs.log("myrestRequest(): In myrestRequest" + url);
             var params, uuid;
-
+            
             params = {};
             _util = finesse.utilities.Utilities;
             

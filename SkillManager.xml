@@ -17,7 +17,11 @@
         <![CDATA[
         	<!DOCTYPE html>
         	<!-- Styling -->
+              
             <link rel="stylesheet" href="SkillManager.css" type="text/css" />
+            <link rel="stylesheet" href="bs/css/bootstrap.min.css" type="text/css" />
+            
+           
 
              <!-- jQuery -->
             <script type="text/javascript" src="/desktop/assets/js/jquery.min.js" charset="UTF-8"></script>
@@ -30,6 +34,10 @@
             <script type="text/javascript" src="config.js" charset="UTF-8"></script>
             <script type="text/javascript" src="include.js" charset="UTF-8"></script>
             
+            
+            <script src="bs/js/popper.min.js"></script>
+            <script src="bs/js/bootstrap.min.js" ></script>
+            
 
             <body>
                 <!-- Sample Gadget -->
@@ -38,27 +46,41 @@
                     <legend></legend>
 
                    <br>
-
-                  <div id="menu">
-                     <select id="select_team"></select>
-                     <button class="stahnout" privdata="stahnout" onClick="finesse.modules.SkillManager.loadResource();"> Nahrát ze serveru </button>
-                     <button class="ulozit" privdata="ulozit" onClick="finesse.modules.SkillManager.updateResource();"> Ulozit agenta </button>
-                     <select id="select_resource"></select>
-                     
-                       <textarea id="result2" readonly rows="1" cols="50">Nacti data ze serveru</textarea>
-                      
+        <div class="row align-items-start"> 
+                
+            <div class="col">  
+                <div class="row">
+                  <div id="menu" class="col">
+                     <label class="mr-sm-2" for="select_team">Select Team</label>
+                     <select class="custom-select mb-2 mr-sm-2 mb-sm-0" id="select_team"></select>
+                     <label class="mr-sm-2" for="select_resource">Select Agent</label>
+                     <select class="custom-select mb-2 mr-sm-2 mb-sm-0" id="select_resource"></select>
+                     <br><br>
+                     <button class="stahnout btn btn-primary" privdata="stahnout" onClick="finesse.modules.SkillManager.loadResource();"> Refresh from server </button>
+                     <button class="ulozit btn btn-success" privdata="ulozit" onClick="finesse.modules.SkillManager.updateResource();"> Save agent </button>
                   </div>
-                  <br>
-                  <div id="result">
-                                         
-                     <div id="skill_list">
-                       </div>
-                        
-                     </div>
+                </div> 
+                <div class="row align-items-end">
+                
+                    <div id="result" class="col">
+                         <br><br>
+                         <div id="skill_list"></div> 
+                    </div> 
+                </div> 
+            </div>
+            <div id="alertarea" class="col">   
+                  
+                
+            </div>
+         </div>
+            
+                  
+             
+                                
+                   
                     
-                    <br>
-                    
-                 
+                  <br><br>   
+                  
 
             		</fieldset>
               
@@ -68,7 +90,7 @@
                <fieldset id="skillmngr_souhrn">
                   <br>
                <div id="souhrn">
-               <table>
+               <table class=table table-fit>
                </table>
                </div>
                 <br>
@@ -79,6 +101,7 @@
             </body>
 
          <script type="text/javascript">
+                
                 gadgets.HubSettings.onConnect = function () {
                     finesse.modules.SkillManager.init();
 
